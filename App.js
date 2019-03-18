@@ -1,62 +1,96 @@
-import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font, Icon } from 'expo';
-import AppNavigator from './navigation/AppNavigator';
+import React, { Component } from 'react';
+import { AppRegistry, Image, Text, View, StyleSheet, TextInput, Dimensions, Button } from 'react-native';
+import firebase from 'firebase';
 
-export default class App extends React.Component {
-  state = {
-    isLoadingComplete: false,
+const {width: WIDTH } = Dimensions.get('window')
+
+  var config = { 
+    apiKey: "AIzaSyB2LKqCGbrIVbqX_2xo5Jw2cl5xg8AAcHY",
+    authDomain: "brasbrascar-fb1c7.firebaseapp.com",
+    databaseURL: "https://brasbrascar-fb1c7.firebaseio.com",
+    projectId: "brasbrascar-fb1c7",
+    storageBucket: "brasbrascar-fb1c7.appspot.com",
+    messagingSenderId: "751862023145"
   };
 
-  render() {
-    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
-      return (
-        <AppLoading
-          startAsync={this._loadResourcesAsync}
-          onError={this._handleLoadingError}
-          onFinish={this._handleFinishLoading}
-        />
-      );
-    } else {
-      return (
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
-        </View>
-      );
-    }
+  firebase.initializeApp(config);
+
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { email: '', password: '', errorMessage: null };
   }
 
-  _loadResourcesAsync = async () => {
-    return Promise.all([
-      Asset.loadAsync([
-        require('./assets/images/robot-dev.png'),
-        require('./assets/images/robot-prod.png'),
-      ]),
-      Font.loadAsync({
-        // This is the font that we are using for our tab bar
-        ...Icon.Ionicons.font,
-        // We include SpaceMono because we use it in HomeScreen.js. Feel free
-        // to remove this if you are not using it in your app
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
-      }),
-    ]);
-  };
 
-  _handleLoadingError = error => {
-    // In this case, you might want to report the error to your error
-    // reporting service, for example Sentry
-    console.warn(error);
-  };
+  render() {
+    let logo = {
+      uri: 'https://image.noelshack.com/fichiers/2019/08/1/1550485662-logo.png'
+    };
 
-  _handleFinishLoading = () => {
-    this.setState({ isLoadingComplete: true });
-  };
+    return (
+       <View style = {styles.inputContainer}>
+        <Image source={logo} style={styles.img}/>
+
+    
+        <TextInput 
+            style= {styles.input} 
+            placeholder={'Adresse mail'} 
+            underlineColorAndroid='transparent' 
+            placeholderTextColor = 'dimgrey' 
+        />  
+        
+
+       
+        <TextInput 
+            style= {styles.input} 
+            placeholder={'Mot de passe'} 
+            underlineColorAndroid='transparent' 
+            placeholderTextColor = 'dimgrey'
+            secureTextEntry={true}
+        />
+        
+
+        <Button style={styles.buttton}
+            onPress={this.login}
+            title= "Connexion"
+            color="#99e265"
+        /> 
+      </View>
+    );
+  }
 }
 
+
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  inputContainer: {
+    marginTop: 10
+  },
+  button: {
+    marginTop: 40,
+    borderRadius: 20,
+  },
+  img: {
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    height: 500,
+  },
+  input: { 
+    alignItems: 'stretch',
+    width: WIDTH - 55,
+    height: 45,
+    borderRadius: 25,
+    fontSize: 16,
+    paddingLeft: 45,
+    marginHorizontal: 25,
+    backgroundColor: 'whitesmoke',
+    color: 'dimgrey',
+  },
+  title: {
+    fontSize: 19,
+    fontWeight: 'bold',
+  },
+  activeTitle: {
+    color: 'red',
   },
 });
